@@ -18,11 +18,16 @@ setup.tmpl.sh 参照
 イメージ、コンテナを作成し、SSHでログインして抜けだして、コンテナを停止してイメージを削除する。
 
 	$ make image
+	$ docker images
 	$ make container
+	$ docker ps
 	$ ssh -p 22220 root@localhost
 	$ exit
 	$ make stop
+	$ docker ps
 	$ make clean
+	$ docker ps -a
+	$ docker images -a
 
 ## ヘルプ
 
