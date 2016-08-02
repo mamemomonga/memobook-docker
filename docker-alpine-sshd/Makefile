@@ -1,6 +1,6 @@
 
 # 埋め込む公開鍵
-SSH_PUBKEY=$(HOME)/.ssh/id_rsa.pub
+SSH_PUBKEY=ssh/id_rsa.pub
 
 # 作成するイメージ
 DCR_IMAGE=alpine-sshd:latest
@@ -28,8 +28,14 @@ usage:
 	@echo ""
 
 # setup.shの作成
-setup.sh: setup.tmpl.sh
+setup.sh: setup.tmpl.sh $(SSH_PUBKEY)
 	sed -e 's;###AUTHORIZED_KEYS###;$(shell cat $(SSH_PUBKEY));g' $< > $@
+
+# ssh
+ssh:
+	mkdir $@
+ssh/id_rsa.pub: ssh
+	ssh-keygen -t rsa -b 4096 -f ssh/id_rsa
 
 # イメージの作成
 image: setup.sh
@@ -66,6 +72,7 @@ import:
 # 削除
 clean:
 	-rm setup.sh
+	-rm -rfv ssh
 	-docker stop $(DCR_CONTAINER)
 	-docker rm  -f $(DCR_CONTAINER)
 	-docker rmi -f $(DCR_IMAGE)

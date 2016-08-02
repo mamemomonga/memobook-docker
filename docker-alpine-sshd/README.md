@@ -10,7 +10,7 @@ setup.tmpl.sh 参照
 
 ## Dockerfileをつかってイメージとコンテナを作成する
 
-~/.ssh/id_rsa.pubが登録され、そのキーでログインできる。
+make image を実行すると、新たにSSHキーペアを作成し、その公開鍵を登録します。
 
 詳しくは Makefile参照
 
@@ -21,7 +21,7 @@ setup.tmpl.sh 参照
 	$ docker images
 	$ make container
 	$ docker ps
-	$ ssh -p 22220 root@localhost
+	$ ssh -i ssh/id_rsa -p 22220 root@localhost
 	$ exit
 	$ make stop
 	$ docker ps
@@ -29,8 +29,18 @@ setup.tmpl.sh 参照
 	$ docker ps -a
 	$ docker images -a
 
+イメージを作成し、docker hubの[USERNAME]に公開する。
+
+(事前に docker login の実行が必要)
+
+	$ make image
+	$ docker tag alpine-sshd:latest [USERNAME]/alpine-sshd:latest
+	$ docker push [USERNAME]/alpine-sshd:latest
+	$ open https://hub.docker.com/r/[USERNAME]/alpine-sshd/
+
 ## ヘルプ
 
 	$ make
 
 だけ実行すると make で利用できるコマンド一覧が表示される。
+
