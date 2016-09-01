@@ -1,10 +1,9 @@
-# Docker install for Debian Jessie
-
-DockerをDebian(Jessie)で構築し、docker-machineでMacから使用する
+# DockerをDebian(Jessie)上に構築し、docker-machineでMacから使用する
 
 https://docs.docker.com/engine/installation/linux/debian/
 
 * Debian側にはSSH公開鍵でログインできること
+* MacにはDocker for Macを導入済み
 * パスワードなしでsudoでrootになれるユーザを用意する(docker-machine createではそのユーザで接続する)
 
 ## Debianでの作業
