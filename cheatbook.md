@@ -39,3 +39,8 @@ the-image イメージから the-container コンテナを作成し、デーモ�
 
 	docker ps -a | awk '{ print $1 }' | sed '1d' | xargs docker rm -f
 
+## docker-machine
+
+現在参照しているDOCKER_HOSTのIPアドレスを取得する
+
+	echo $DOCKER_HOST | sed -e 's/^tcp:\/\///' -e 's/:[0-9]*$//'
