@@ -1,12 +1,9 @@
-# DockerをDebian(Jessie)上に構築し、docker-machineでMacから使用する
+
+# Debian jessie上にセットアップする
 
 https://docs.docker.com/engine/installation/linux/debian/
 
-* Debian側にはSSH公開鍵でログインできること
-* MacにはDocker for Macを導入済み
-* パスワードなしでsudoでrootになれるユーザを用意する(docker-machine createではそのユーザで接続する)
-
-## Debianでの作業
+## docker-engine のインストール
 
 	sudo sh -c 'cat > /etc/apt/sources.list.d/backports.list' << 'EOS'
 	deb http://ftp.jp.debian.org/debian jessie-backports main
@@ -32,6 +29,52 @@ https://docs.docker.com/engine/installation/linux/debian/
 	service docker start
 	EOS
 
+## sudoなしに docker コマンドを実行できるようにする
+
+https://docs.docker.com/engine/installation/linux/debian/#/giving-non-root-access
+
+	bash << 'EOS'
+	if [ -z $(getent group docker) ]; then
+	  sudo groupadd docker
+	fi
+	sudo gpasswd -a $USER docker
+	sudo service docker restart
+	exec $SHELL
+	EOS
+
+	いったんexitして再ログインする
+
+	docker info
+
+## docker-compose, docker-machineのインストール
+
+* https://docs.docker.com/compose/install/
+* https://docs.docker.com/machine/install-machine/
+
+最新のを自動でいれたいので jqをいれる。もっといい方法あるのかもしれない
+
+クライアント側で利用するものなので、サーバとして利用するだけならば不要
+
+	sudo bash << 'EOS'
+	 set -e
+	 apt-get -y install jq
+	 for i in compose machine; do
+	   TAGNAME=$(curl -Ls https://api.github.com/repos/docker/$i/releases/latest | jq -r '.tag_name')
+	   URL=https://github.com/docker/$i/releases/download/$TAGNAME/docker-$i-`uname -s`-`uname -m`
+	   echo "docker-$i TAG: $TAGNAME"
+	   echo "docker-$i URL: $URL"
+	   curl -L $URL > /usr/local/bin/docker-$i
+	   chmod +x /usr/local/bin/docker-$i
+	   docker-$i -v
+	 done
+	EOS
+
+
+# docker-machineでdebian上のdockerをMacから使用する
+
+* Debian側にはSSH公開鍵でログインできること
+* MacにはDocker for Macを導入済み
+* パスワードなしでsudoでrootになれるユーザを用意する(docker-machine createではそのユーザで接続する)
 
 ## Macでの作業
 
