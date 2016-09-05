@@ -1,6 +1,9 @@
 #!/bin/sh
 set -xe
 
+# INSTALL
+# curl -L https://raw.githubusercontent.com/mamemomonga/memobook-docker/master/debian/install.sh | sh
+
 sudo sh << 'END_OF_SUDO'
 set -xe
 
@@ -35,7 +38,6 @@ for i in compose machine; do
 done
 
 END_OF_SUDO
-
 
 if [ -z $(getent group docker) ]; then
   sudo groupadd docker
