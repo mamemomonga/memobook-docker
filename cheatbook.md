@@ -72,6 +72,14 @@ the-containerのIPアドレスを取得する
 
 	$ docker ps -a | awk '{ print $1 }' | sed '1d' | xargs docker rm -f
 
+### 終了したコンテナを削除
+
+	$ docker ps -a -f 'exited=0' --format '{{ .ID }}' | xargs docker rm
+
+### ダグのないイメージを削除
+
+	$ docker images -f 'dangling=true' --format '{{ .ID }}' | xargs docker rmi
+	
 ## docker-machine
 
 現在参照しているDOCKER_HOSTのIPアドレスを取得する
