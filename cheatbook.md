@@ -1,9 +1,37 @@
 # Dockerチートブック
 
-## 基本的な考え方
+# run
 
+busyboxのシェル起動、exitしたらコンテナを削除
 
+	$ docker run -it --rm busybox sh
+	
+busyboxで1日スリープするコンテナをバックグラウンドで起動、hello.sh をローカルで作成し実行中のコンテナに送信しコンテナで起動、シェルに入り内容を確認したあとコンテナを終了して削除。
 
+	$ cat > hello.sh << 'EOS'
+#!/bin/sh
+echo "Hello World!"
+EOS
+
+	$ docker run -d --name 'test-busybox' busybox sleep 1d
+
+	$ cat hello.sh | docker exec -i test-busybox sh -c 'cat > /hello.sh; chmod 755 /hello.sh'
+
+	$ docker exec test-busybox /hello.sh
+	Hello World!
+
+	$ docker exec -it test-busybox sh
+	/ # cat hello.sh
+	#!/bin/sh
+	echo "Hello World!"
+
+	/ # exit
+
+	$ docker stop test-busybox
+	test-busybox
+
+	$ docker rm test-busybox
+	test-busybox
 
 
 ## イメージ
@@ -79,7 +107,7 @@ the-containerのIPアドレスを取得する
 ### ダグのないイメージを削除
 
 	$ docker images -f 'dangling=true' --format '{{ .ID }}' | xargs docker rmi
-	
+
 ## docker-machine
 
 現在参照しているDOCKER_HOSTのIPアドレスを取得する
