@@ -1,6 +1,38 @@
-# Dockerチートブック
+# Dockerコマンドチートブック
 
-# run
+# 便利なコマンド集
+
+### bash: TheVolumeがなければ作成する
+
+	function create_docker_volume {
+		local name=$1
+		if [ -z "$( docker volume ls --filter "name=$name" --format '{{ .Name }}' )" ]; then
+			echo "Creating Docker Volume: $name"
+			docker volume create $name
+		fi
+	}
+
+	create_docker_volume TheVolume
+
+### TheContainerのIPアドレスを取得する
+
+	$ docker inspect --format="{{ .NetworkSettings.IPAddress }}" TheContainer
+
+### すべてのコンテナを削除
+
+	$ docker ps -a | awk '{ print $1 }' | sed '1d' | xargs docker rm -f
+
+### 終了したコンテナを削除
+
+	$ docker ps -a -f 'exited=0' --format '{{ .ID }}' | xargs docker rm
+
+### ダグのないイメージを削除
+
+	$ docker images -f 'dangling=true' --format '{{ .ID }}' | xargs docker rmi
+
+# コマンド
+
+### run
 
 busyboxのシェル起動、exitしたらコンテナを削除
 
@@ -9,9 +41,9 @@ busyboxのシェル起動、exitしたらコンテナを削除
 busyboxで1日スリープするコンテナをバックグラウンドで起動、hello.sh をローカルで作成し実行中のコンテナに送信しコンテナで起動、シェルに入り内容を確認したあとコンテナを終了して削除。
 
 	$ cat > hello.sh << 'EOS'
-#!/bin/sh
-echo "Hello World!"
-EOS
+	#!/bin/sh
+	echo "Hello World!"
+	EOS
 
 	$ docker run -d --name 'test-busybox' busybox sleep 1d
 
@@ -32,7 +64,6 @@ EOS
 
 	$ docker rm test-busybox
 	test-busybox
-
 
 ## イメージ
 
@@ -89,24 +120,6 @@ the-container 起動
 the-container 削除
 
 	$ docker rm the-container
-
-### inspect
-
-the-containerのIPアドレスを取得する
-
-	$ docker inspect --format="{{ .NetworkSettings.IPAddress }}" the-container
-
-### すべてのコンテナを削除
-
-	$ docker ps -a | awk '{ print $1 }' | sed '1d' | xargs docker rm -f
-
-### 終了したコンテナを削除
-
-	$ docker ps -a -f 'exited=0' --format '{{ .ID }}' | xargs docker rm
-
-### ダグのないイメージを削除
-
-	$ docker images -f 'dangling=true' --format '{{ .ID }}' | xargs docker rmi
 
 ## docker-machine
 
