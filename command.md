@@ -2,18 +2,6 @@
 
 # 便利なコマンド集
 
-### bash: TheVolumeがなければ作成する
-
-	function create_docker_volume {
-		local name=$1
-		if [ -z "$( docker volume ls --filter "name=$name" --format '{{ .Name }}' )" ]; then
-			echo "Creating Docker Volume: $name"
-			docker volume create $name
-		fi
-	}
-
-	create_docker_volume TheVolume
-
 ### TheContainerのIPアドレスを取得する
 
 	$ docker inspect --format="{{ .NetworkSettings.IPAddress }}" TheContainer
@@ -29,6 +17,18 @@
 ### ダグのないイメージを削除
 
 	$ docker images -f 'dangling=true' --format '{{ .ID }}' | xargs docker rmi
+
+### bash: TheVolumeがなければNamed Volumeを作成する
+
+	function create_docker_volume {
+		local name=$1
+		if [ -z "$( docker volume ls --filter "name=$name" --format '{{ .Name }}' )" ]; then
+			echo "Creating Docker Volume: $name"
+			docker volume create $name
+		fi
+	}
+
+	create_docker_volume TheVolume
 
 # コマンド
 
