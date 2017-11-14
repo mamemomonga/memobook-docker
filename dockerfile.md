@@ -24,18 +24,18 @@
 		uname -a > /uname.txt && \
 		rm /uname.txt
 
-### [ADD](http://docs.docker.jp/engine/reference/builder.html#add)
+#### [ADD](http://docs.docker.jp/engine/reference/builder.html#add)
 
 ファイル追加、フォルダ一括追加やtarアーカイブ展開機能があるので、単一ファイルの追加の明示する場合はCOPYのほうがよい。
 
 	ADD assets/ /
 
-### [ENTRYPOINT](http://docs.docker.jp/engine/reference/builder.html#entrypoint)
+#### [ENTRYPOINT](http://docs.docker.jp/engine/reference/builder.html#entrypoint)
 
 コンテナが実行するプログラム。
 docker run 時の引数が渡される。
 
-### [CMD](http://docs.docker.jp/engine/reference/builder.html#cmd)
+#### [CMD](http://docs.docker.jp/engine/reference/builder.html#cmd)
 
 コンテナが実行するデフォルトプログラム。
 docker run 時の引数が渡された場合そのプログラムが実行される。
