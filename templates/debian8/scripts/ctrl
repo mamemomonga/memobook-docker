@@ -1,0 +1,43 @@
+#!/bin/bash
+set -euo pipefail
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+source $BASEDIR/config.env
+
+function do_up {
+	do_down
+	echo "[DOCKER RUN]"
+	docker run $DCOPT -d --name $DCNTR $DCIMG server
+	sleep 1
+	docker ps -a --filter "name=$DCNTR"
+}
+
+function do_down {
+	echo "[DOCKER STOP]"
+	docker stop $DCNTR || true 
+	echo "[DOCKER RM]"
+	docker rm   $DCNTR || true 
+}
+
+COMMANDS="up down"
+
+function usage {
+	echo "USAGE: $0 [ COMMAND ]"
+	echo "COMMANDS:"
+	for i in $COMMANDS; do
+		echo "  $i"
+	done
+	exit 1
+}
+
+if [ -z "${1:-}" ]; then usage; fi
+for i in $COMMANDS; do
+	if [ "$i" == "$1" ]; then
+		RUNCOMMAND="do_"$i
+		if [ "$(type -t "$RUNCOMMAND")" ]; then
+			shift
+			$RUNCOMMAND $@
+			exit 0
+		fi
+	fi
+done
+usage

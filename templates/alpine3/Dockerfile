@@ -1,6 +1,6 @@
 FROM alpine:3.6
 
-# 時刻の設定
+# ローカルタイムを日本時間にする
 RUN set -xe && \
 	rm /etc/localtime && \
 	ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
