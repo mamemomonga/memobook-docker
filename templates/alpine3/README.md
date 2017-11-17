@@ -1,4 +1,4 @@
-# Alpile Linux3
+# Alpine Linux3
 
 Alpine Linux3で待機するだけのサーバを作成します
 
