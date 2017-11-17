@@ -12,7 +12,7 @@
 
 ### 終了したコンテナを削除
 
-	$ docker ps -a -f 'exited=0' --format '{{ .ID }}' | xargs docker rm
+	$ docker ps -a | grep 'Exited' | sed '1d' | awk '{ print $1 }' | xargs docker rm
 
 ### ダグのないイメージを削除
 
