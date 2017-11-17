@@ -49,34 +49,46 @@ function do_app {
 
 # ----------------------
 
+# 自分のディレクトリ
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Dockerコンテナ名
 DCNTR=alpine-example
 
 # Dockerイメージ名
-DCIMG=alpine-example
+DCIMG=$DCNTR
 
 # Docker Named Volume
-DCVOL=alpine-example
+DCVOL=$DCNTR
 
 # Docker run 追加オプション
 # Named Volumeがなければ自動的に作成される
 DCOPT="-v $DCVOL:/volume/data"
 
+# コマンド一覧
+COMMANDS="once up down root app tail rmvol"
+
+# 使い方
 function usage {
-	echo "USAGE: $0 [ once | up | down | root | app | tail | rmvol ]"
+	echo "USAGE: $0 [ COMMAND ]"
+	echo "COMMANDS:"
+	for i in $COMMANDS; do
+		echo "  $i"
+	done
 	exit 1
 }
 
-case "${1:-}" in
-	"once"  ) do_once  ;;
-	"up"    ) do_up    ;;
-	"down"  ) do_down  ;;
-	"tail"  ) do_tail  ;;
-	"rmvol" ) do_remove_volume ;;
-	"root"  ) do_root  ;;
-	"app"   ) do_app   ;;
-	*       ) usage    ;;
-esac
+# do_[コマンド名] を実行
+if [ -z "${1:-}" ]; then usage; fi
+for i in $COMMANDS; do
+	if [ "$i" == "$1" ]; then
+		RUNCOMMAND="do_"$i
+		if [ "$(type -t "$RUNCOMMAND")" ]; then
+			shift
+			$RUNCOMMAND $@
+			exit 0
+		fi
+	fi
+	usage
+done
 
